@@ -4,8 +4,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dbConfig = require("./config/db");
 const assetRoutes = require("./routes/AssetRoutes");
-//const maintenanceRoutes = require('./routes/maintenanceRoutes');
-//const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 
@@ -21,8 +19,6 @@ mongoose
 
 // Routes
 app.use("/assets", assetRoutes);
-//app.use('/maintenance', maintenanceRoutes);
-//app.use('/reports', reportRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

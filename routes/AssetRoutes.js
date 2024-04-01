@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const assetControllers = require("../controllers/assetController");
+const assetController = require("../controllers/assetController");
 
-router.get("/", assetControllers.getAllAssets);
+router.get("/", assetController.getAllAssets);
+router.post("/", assetController.createAsset);
+router.get("/:id", assetController.getAssetById);
+router.put("/:id", assetController.updateAsset);
+router.delete("/:id", assetController.deleteAsset);
 
 module.exports = router;
