@@ -5,6 +5,7 @@ const cors = require("cors");
 const dbConfig = require("./config/db");
 const assetRoutes = require("./routes/AssetRoutes");
 const maintenanceRoutes = require("./routes/MaintenanceRoutes");
+const purchaseRoutes = require("./routes/PurchaseRoutes");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/assets", assetRoutes);
 
 
 app.use("/maintenance", maintenanceRoutes);
+app.use("/purchase", purchaseRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
