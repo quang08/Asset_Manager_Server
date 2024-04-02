@@ -48,6 +48,19 @@ const maintenanceController = {
     }
   },
 
+  getMaintenanceById: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const getMaintenanceById = await Maintenance.findById(id);
+      if (!getMaintenanceById) {
+        return res.status(404).json({ message: "Maintenance not found" });
+      }
+      res.status(200).json(getMaintenanceById);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
   
 //...
 };
