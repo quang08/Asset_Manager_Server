@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const maintenanceSchema = new mongoose.Schema({
   asset: { type: mongoose.Schema.Types.ObjectId, ref: "Asset", required: true },
-  type: { type: String, required: true },
+  type: { type: String },
   date: { type: Date, required: true },
   description: { type: String },
   cost: { type: Number },
