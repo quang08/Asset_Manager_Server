@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const maintenanceController = require("../controllers/maintenanceController");
 
-router.get("/", maintenanceController.getAllMaintenancerecords);
+router.get("/", maintenanceController.getAllMaintenanceRecords);
 router.post("/", maintenanceController.createMaintenance);
 router.put("/:id", maintenanceController.updateMaintenance);
 router.delete("/:id", maintenanceController.deleteMaintenance);

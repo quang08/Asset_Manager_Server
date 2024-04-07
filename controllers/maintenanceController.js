@@ -1,14 +1,39 @@
 const Maintenance = require("../models/Maintenance");
+const Asset = require('../models/Asset');
+
 
 const maintenanceController = {
-  getAllMaintenancerecords: async (req, res) => {
+   getAllMaintenanceRecords: async (req, res) =>{
     try {
-      const maintenance = await Maintenance.find();
-      res.status(200).json(maintenance);
+      // Find assets with currentStatus set to "Maintaining"
+      const maintainingAssets = await Asset.find({ currentStatus: "Maintaining" });
+  
+      // Iterate over maintainingAssets and create maintenance records
+      const maintenancePromises = maintainingAssets.map(async (asset) => {
+        // Create a new maintenance record for the asset
+        const newMaintenance = new Maintenance({
+          asset: asset._id,
+          type: "Routine maintenance", // Adjust the type as needed
+          date: new Date(), // Set the current date or adjust as needed
+          description: "Routine maintenance description", // Provide a description
+          cost: 0, // Set the cost as needed
+        });
+  
+        // Save the new maintenance record
+        return await newMaintenance.save();
+      });
+  
+      // Execute all maintenance creation promises
+      const maintenanceRecords = await Promise.all(maintenancePromises);
+  
+      res.status(200).json(maintenanceRecords);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
+  
+
+
 
   createMaintenance: async (req, res) => {
     const newMaintenance = new Maintenance(req.body);
