@@ -7,7 +7,9 @@ const assetSchema = new mongoose.Schema({
   purchaseCost: { type: Number },
   currentStatus: {
     type: String,
-    enum: ["Good condition", "Maintaining","Sold"],
+
+    enum: ["Good condition", "Maintaining", "Sold"],
+
     default: "Good condition",
   },
 });

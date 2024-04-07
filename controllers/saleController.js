@@ -1,27 +1,56 @@
+const Asset = require("../models/Asset");
 const Sale = require("../models/Sale");
 
 const saleController = {
   createSale: async (req, res) => {
-    const newSale = new Sale(req.body);
+    const { assetId, salePrice, buyer } = req.body;
+
     try {
+      // Find the asset based on the provided ID
+      const asset = await Asset.findById(assetId);
+
+      if (!asset) {
+        return res.status(404).json({ message: "Asset not found" });
+      }
+
+      // Create the sale record with asset details
+      const newSale = new Sale({
+        asset: asset._id,
+        assetName: asset.name,
+        saleDate: new Date(), // Set the sale date from user input
+        salePrice: salePrice, // Set the sale price from user input
+        buyer: buyer, // Set the buyer from user input
+      });
+
+      // Save the sale record
       const savedSale = await newSale.save();
+
+      // Update the asset's currentStatus to "Sold"
+      asset.currentStatus = "Sold";
+      await asset.save();
+
       res.status(201).json(savedSale);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
-    // Implement createSale controller function
   },
-  // Implement other controller functions for CRUD operations
+
   GetallSales: async (req, res) => {
     try {
-      const Sales = await Sale.find();
-      res.status(200).json(Sales);
+      // Find assets with currentStatus set to "Sold"
+      const soldAssets = await Asset.find({
+        currentStatus: "Sold",
+      });
+
+      const salesRecords = await Sale.find({
+        asset: { $in: soldAssets.map((asset) => asset._id) },
+      });
+
+      res.status(200).json(salesRecords);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
-
- 
 
   updateSale: async (req, res) => {
     const { id } = req.params;
