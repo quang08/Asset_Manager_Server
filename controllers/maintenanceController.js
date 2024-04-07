@@ -1,7 +1,11 @@
 const Asset = require("../models/Asset");
 const Maintenance = require("../models/Maintenance");
+const Asset = require('../models/Asset');
+
 
 const maintenanceController = {
+
+  
   getAllMaintenanceRecords: async (req, res) => {
     try {
       // Find assets with currentStatus set to "Maintaining"
@@ -14,11 +18,15 @@ const maintenanceController = {
         asset: { $in: maintainingAssets.map((asset) => asset._id) },
       });
 
+
       res.status(200).json(maintenanceRecords);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
+  
+
+
 
   createMaintenance: async (req, res) => {
     const { assetId, description, cost } = req.body;
