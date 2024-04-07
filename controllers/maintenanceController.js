@@ -2,14 +2,6 @@ const Asset = require("../models/Asset");
 const Maintenance = require("../models/Maintenance");
 
 const maintenanceController = {
-  // getAllMaintenancerecords: async (req, res) => {
-  //   try {
-  //     const maintenance = await Maintenance.find();
-  //     res.status(200).json(maintenance);
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // },
   getAllMaintenanceRecords: async (req, res) => {
     try {
       // Find assets with currentStatus set to "Maintaining"
@@ -17,23 +9,10 @@ const maintenanceController = {
         currentStatus: "Maintaining",
       });
 
-      // Iterate over maintainingAssets and create maintenance records
-      const maintenancePromises = maintainingAssets.map(async (asset) => {
-        // Create a new maintenance record for the asset
-        const newMaintenance = new Maintenance({
-          asset: asset._id,
-          type: "Routine maintenance", // Adjust the type as needed
-          date: new Date(), // Set the current date or adjust as needed
-          description: "Routine maintenance description", // Provide a description
-          cost: 0, // Set the cost as needed
-        });
-
-        // Save the new maintenance record
-        return await newMaintenance.save();
+      // Fetch maintenance records for maintaining assets
+      const maintenanceRecords = await Maintenance.find({
+        asset: { $in: maintainingAssets.map((asset) => asset._id) },
       });
-
-      // Execute all maintenance creation promises
-      const maintenanceRecords = await Promise.all(maintenancePromises);
 
       res.status(200).json(maintenanceRecords);
     } catch (error) {
@@ -41,17 +20,8 @@ const maintenanceController = {
     }
   },
 
-  // createMaintenance: async (req, res) => {
-  //   const newMaintenance = new Maintenance(req.body);
-  //   try {
-  //     const savedMaintenance = await newMaintenance.save();
-  //     res.status(201).json(savedMaintenance);
-  //   } catch (error) {
-  //     res.status(400).json({ message: error.message });
-  //   }
-  // },
   createMaintenance: async (req, res) => {
-    const { assetId, description } = req.body;
+    const { assetId, description, cost } = req.body;
 
     try {
       // Find the asset based on the provided ID
@@ -64,9 +34,10 @@ const maintenanceController = {
       // Create the maintenance record with asset details
       const newMaintenance = new Maintenance({
         asset: asset._id,
+        assetName: asset.name,
         date: new Date(), // Set the date as needed
         description: description, // Set the description from user input
-        // You can set the cost if applicable
+        cost: cost,
       });
 
       // Save the maintenance record
