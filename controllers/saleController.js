@@ -6,26 +6,22 @@ const saleController = {
     const { assetId, salePrice, buyer } = req.body;
 
     try {
-      // Find the asset based on the provided ID
       const asset = await Asset.findById(assetId);
 
       if (!asset) {
         return res.status(404).json({ message: "Asset not found" });
       }
 
-      // Create the sale record with asset details
       const newSale = new Sale({
         asset: asset._id,
         assetName: asset.name,
-        saleDate: new Date(), // Set the sale date from user input
-        salePrice: salePrice, // Set the sale price from user input
-        buyer: buyer, // Set the buyer from user input
+        saleDate: new Date(),
+        salePrice: salePrice,
+        buyer: buyer,
       });
 
-      // Save the sale record
       const savedSale = await newSale.save();
 
-      // Update the asset's currentStatus to "Sold"
       asset.currentStatus = "Sold";
       await asset.save();
 
@@ -37,7 +33,6 @@ const saleController = {
 
   GetallSales: async (req, res) => {
     try {
-      // Find assets with currentStatus set to "Sold"
       const soldAssets = await Asset.find({
         currentStatus: "Sold",
       });

@@ -1,57 +1,44 @@
 const Asset = require("../models/Asset");
 const Maintenance = require("../models/Maintenance");
-const Asset = require('../models/Asset');
-
+const Asset = require("../models/Asset");
 
 const maintenanceController = {
-
-  
   getAllMaintenanceRecords: async (req, res) => {
     try {
-      // Find assets with currentStatus set to "Maintaining"
       const maintainingAssets = await Asset.find({
         currentStatus: "Maintaining",
       });
 
-      // Fetch maintenance records for maintaining assets
       const maintenanceRecords = await Maintenance.find({
         asset: { $in: maintainingAssets.map((asset) => asset._id) },
       });
-
 
       res.status(200).json(maintenanceRecords);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
-  
-
-
 
   createMaintenance: async (req, res) => {
     const { assetId, description, cost } = req.body;
 
     try {
-      // Find the asset based on the provided ID
       const asset = await Asset.findById(assetId);
 
       if (!asset) {
         return res.status(404).json({ message: "Asset not found" });
       }
 
-      // Create the maintenance record with asset details
       const newMaintenance = new Maintenance({
         asset: asset._id,
         assetName: asset.name,
-        date: new Date(), // Set the date as needed
-        description: description, // Set the description from user input
+        date: new Date(),
+        description: description,
         cost: cost,
       });
 
-      // Save the maintenance record
       const savedMaintenance = await newMaintenance.save();
 
-      // Update the asset's currentStatus to "Maintaining"
       asset.currentStatus = "Maintaining";
       await asset.save();
 
