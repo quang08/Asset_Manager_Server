@@ -1,4 +1,5 @@
 const Asset = require("../models/Asset");
+const Sale = require("../models/Sale");
 
 const assetController = {
   getAllAssets: async (req, res) => {
@@ -72,6 +73,52 @@ const assetController = {
       res.status(200).json({ status });
     } catch (e) {
       res.status(500).json({ message: e.message });
+    }
+  },
+
+  generateAssetReport: async (req, res) => {
+    try {
+      const assets = await Asset.find();
+      const assetReports = await Promise.all(
+        assets.map(async (asset) => {
+          const sale = await Sale.findOne({ asset: asset._id });
+          const profit = sale ? sale.salePrice - asset.purchaseCost : null;
+          return {
+            name: asset.name,
+            description: asset.description,
+            purchaseDate: asset.purchaseDate,
+            purchaseCost: asset.purchaseCost,
+            currentStatus: asset.currentStatus,
+            profit,
+          };
+        })
+      );
+      res.status(200).json(assetReports);
+    } catch (e) {
+      res.status(500).json({ message: e.message });
+    }
+  },
+
+  getAssetReportById: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const asset = await Asset.findById(id);
+      if (!asset) {
+        return res.status(404).json({ message: "Asset not found" });
+      }
+      const sale = await Sale.findOne({ asset: asset._id });
+      const profit = sale ? sale.salePrice - asset.purchaseCost : null;
+      const detailedReport = {
+        name: asset.name,
+        description: asset.description,
+        purchaseDate: asset.purchaseDate,
+        purchaseCost: asset.purchaseCost,
+        currentStatus: asset.currentStatus,
+        profit,
+      };
+      res.status(200).json(detailedReport);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   },
 };
