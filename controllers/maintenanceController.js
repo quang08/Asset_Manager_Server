@@ -1,6 +1,5 @@
 const Asset = require("../models/Asset");
 const Maintenance = require("../models/Maintenance");
-const Asset = require("../models/Asset");
 
 const maintenanceController = {
   getAllMaintenanceRecords: async (req, res) => {

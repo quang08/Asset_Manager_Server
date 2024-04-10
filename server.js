@@ -7,13 +7,15 @@ const assetRoutes = require("./routes/AssetRoutes");
 const maintenanceRoutes = require("./routes/MaintenanceRoutes");
 const purchaseRoutes = require("./routes/PurchaseRoutes");
 const saleRoutes = require("./routes/SaleRoutes");
-const authRouter = require("./routes/AuthRoutes")
+const authRouter = require("./routes/AuthRoutes");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieParser());
 
 // Connect to MongoDB
 mongoose
@@ -23,15 +25,10 @@ mongoose
 
 // Routes
 app.use("/assets", assetRoutes);
-
-
-
 app.use("/maintenance", maintenanceRoutes);
 app.use("/purchase", purchaseRoutes);
-app.use("/sale",saleRoutes);
-app.use("/auth",authRouter);
-
-
+app.use("/sale", saleRoutes);
+app.use("/auth", authRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
