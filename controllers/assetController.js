@@ -60,6 +60,20 @@ const assetController = {
       res.status(500).json({ message: error.message });
     }
   },
+
+  getAssetStatus: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const asset = await Asset.findById(id);
+      if (!asset) {
+        return res.status(404).json({ message: "Asset not found" });
+      }
+      const status = asset.currentStatus;
+      res.status(200).json({ status });
+    } catch (e) {
+      res.status(500).json({ message: e.message });
+    }
+  },
 };
 
 module.exports = assetController;
